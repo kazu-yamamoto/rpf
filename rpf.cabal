@@ -1,0 +1,40 @@
+Name:                   rpf
+Version:                0.2.0
+Author:                 Kazu Yamamoto <kazu@iij.ad.jp>
+Maintainer:             Kazu Yamamoto <kazu@iij.ad.jp>
+License:                BSD3
+Homepage:               http://www.mew.org/~kazu/proj/rpf/
+Synopsis:               Receiver Policy Framework
+Description:            Receiver Policy Framework (RPF) is a Milter
+                        program to change actions of e-mail receiver
+                        side according to results of the anti-spam
+                        technologies.
+Category:               Network
+Cabal-Version:          >= 1.6
+Build-Type:             Simple
+Data-Files:             rpf.conf, rpf.policy
+Data-Dir:               config
+Executable rpf
+  Main-Is:              Main.hs
+  if impl(ghc >= 6.12)
+    GHC-Options:        -Wall -O2 -fno-warn-unused-do-bind
+  else
+    GHC-Options:        -Wall -O2
+  Build-Depends:        base >= 4.0 && < 5, parsec, appar,
+                        haskell98, base, network, unix, hdaemonize,
+                        c10k, dns, hslogger, iproute, domain-auth, bytestring
+  Other-Modules:        Config
+                        LogMsg
+                        Milter
+                        Milter.Env
+                        Milter.Log
+                        Milter.Switch
+                        Milter.Types
+                        Parsec
+                        RPF
+                        RPF.Eval
+                        RPF.Lexer
+                        RPF.Parser
+                        RPF.State
+                        RPF.Types
+                        MailSpec

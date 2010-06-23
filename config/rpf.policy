@@ -1,0 +1,23 @@
+// #ip
+connect {
+	accept: #ip == 127.0.0.1;
+	continue;
+}
+
+// #spf, #mail_from
+mail_from {
+	accept: #spf == 'pass';
+	continue;
+}
+
+// #from, #pra, #sender_id, #dkim_from, #domainkeys_from, #sig_dkim, #sig_domainkeys
+header {
+	accept: #sender_id == 'pass';
+	reject: #mail_from == "yahoo.com" && #sig_domainkeys == No;
+	continue;
+}
+
+// #dkim, #domainkeys, #adsp
+body {
+	continue;
+}

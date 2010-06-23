@@ -1,0 +1,20 @@
+connect {
+	continue;
+}
+
+mail_from {
+	reject: #spf == 'softfail', 'hardfail';
+	continue;
+}
+
+header {
+	accept: #sender_id == 'pass';
+	reject: #mail_from == "yahoo.com" && #sig_domainkeys == No;
+	continue;
+}
+
+body {
+	accept: #dkim == 'pass';
+	accept: #domainkeys == 'pass';
+	continue;
+}
