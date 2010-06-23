@@ -30,11 +30,12 @@ Executable rpf
                         Milter.Log
                         Milter.Switch
                         Milter.Types
+                        MailSpec
                         Parsec
                         RPF
                         RPF.Eval
+                        RPF.IP
                         RPF.Lexer
                         RPF.Parser
                         RPF.State
                         RPF.Types
-                        MailSpec

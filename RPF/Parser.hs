@@ -1,15 +1,16 @@
 module RPF.Parser where
 
 import Control.Monad
+import Data.IP
 import Data.List
 import Data.Maybe
-import Data.IP
 import Network.DNS.Types (Domain)
+import Network.DomainAuth
+import Parsec hiding (Parser)
+import RPF.IP
 import RPF.Lexer
 import RPF.State
 import RPF.Types
-import Network.DomainAuth
-import Parsec hiding (Parser)
 import Text.ParserCombinators.Parsec.Expr
 
 {-
@@ -39,8 +40,9 @@ config = do
     eof
     st <- getState
     checkUnused (unused st)
-    return $ Policy blks (reverse $ iplol st) (reverse $ domlol st)
+    return $ Policy blks (iptbls st) (reverse $ domlol st)
   where
+    iptbls = map makeIPTable . reverse . iplol
     checkUnused [] = return ()
     checkUnused us = unexpected $ ": Not used -- " ++ concat (intersperse ", " us)
 

@@ -1,8 +1,8 @@
 module RPF.Types where
 
-import Data.IP
 import Network.DNS.Types (Domain)
 import Network.DomainAuth
+import RPF.IP
 
 type Pline = Int
 
@@ -97,7 +97,7 @@ data ConstantValue = CV_Index Int | CV_Result [DAResult] | CV_Sig Bool
 
 ----------------------------------------------------------------
 
-data Policy = Policy [Block] [[IPRange]] [[Domain]] deriving (Eq, Show)
+data Policy = Policy [Block] [IPTable] [[Domain]] deriving (Eq, Show)
 data Block = Block BlockName [ActionCond] deriving (Eq, Show)
 data ActionCond = ActionCond Pline (Maybe Cond) Action deriving (Eq, Show)
 data Cond = Variable :== Constant | Variable :!= Constant | Cond :&& Cond deriving (Eq, Show)
