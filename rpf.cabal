@@ -22,7 +22,8 @@ Executable rpf
     GHC-Options:        -Wall -O2
   Build-Depends:        base >= 4.0 && < 5, parsec, appar,
                         haskell98, base, network, unix, hdaemonize,
-                        c10k, dns, hslogger, iproute, domain-auth, bytestring
+                        containers, hslogger, bytestring,
+                        c10k, iproute, dns, domain-auth
   Other-Modules:        Config
                         LogMsg
                         Milter
@@ -33,6 +34,7 @@ Executable rpf
                         MailSpec
                         Parsec
                         RPF
+                        RPF.Domain
                         RPF.Eval
                         RPF.IP
                         RPF.Lexer

@@ -7,6 +7,7 @@ import Data.Maybe
 import Network.DNS.Types (Domain)
 import Network.DomainAuth
 import Parsec hiding (Parser)
+import RPF.Domain
 import RPF.IP
 import RPF.Lexer
 import RPF.State
@@ -40,9 +41,10 @@ config = do
     eof
     st <- getState
     checkUnused (unused st)
-    return $ Policy blks (iptbls st) (reverse $ domlol st)
+    return $ Policy blks (iptbls st) (domtbls st)
   where
     iptbls = map makeIPTable . reverse . iplol
+    domtbls = map makeDomainTable . reverse . domlol
     checkUnused [] = return ()
     checkUnused us = unexpected $ ": Not used -- " ++ concat (intersperse ", " us)
 

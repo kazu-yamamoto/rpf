@@ -4,7 +4,7 @@ import Control.Monad
 import Data.List (foldl')
 import Data.Maybe
 import MailSpec
-import Network.DNS.Types (Domain)
+import RPF.Domain
 import RPF.IP
 import RPF.Types
 
@@ -15,13 +15,13 @@ evalRPF ms (Policy bs is ds) bn = evalBlock ms is ds (bs !! fromEnum bn)
 
 ----------------------------------------------------------------
 
-evalBlock :: MailSpec -> [IPTable] -> [[Domain]] -> Block -> (Pline, Action)
+evalBlock :: MailSpec -> [IPTable] -> [DomainTable] -> Block -> (Pline, Action)
 evalBlock ms is ds (Block _ as) =
     fromJust $ foldl' mplus mzero (map (evalAction ms is ds) as)
 
 ----------------------------------------------------------------
 
-evalAction :: MailSpec -> [IPTable] -> [[Domain]] -> ActionCond -> Maybe (Pline, Action)
+evalAction :: MailSpec -> [IPTable] -> [DomainTable] -> ActionCond -> Maybe (Pline, Action)
 evalAction _ _ _ (ActionCond l Nothing act) = Just (l, act)
 evalAction ms is ds (ActionCond l (Just cnd) act) =
     if evalCnd ms is ds cnd
@@ -30,19 +30,19 @@ evalAction ms is ds (ActionCond l (Just cnd) act) =
 
 ----------------------------------------------------------------
 
-evalCnd :: MailSpec -> [IPTable] -> [[Domain]] -> Cond -> Bool
+evalCnd :: MailSpec -> [IPTable] -> [DomainTable] -> Cond -> Bool
 evalCnd ms is ds (v :== d) = include ms is ds v d
 evalCnd ms is ds (v :!= d) = exclude ms is ds v d
 evalCnd ms is ds (c1 :&& c2) = evalCnd ms is ds c1 && evalCnd ms is ds c2
 
 ----------------------------------------------------------------
 
-include :: MailSpec -> [IPTable] -> [[Domain]] -> Variable -> Constant -> Bool
+include :: MailSpec -> [IPTable] -> [DomainTable] -> Variable -> Constant -> Bool
 include ms is _ (DT_IP,  _) (_, CV_Index n) = ipMatch (msPeerIP ms) (is!!n)
 include ms _ ds (DT_Dom, vid) (_, CV_Index n) =
     case getDom vid of
       Nothing -> False
-      Just dom -> domMatch dom (ds!!n)
+      Just dom -> domainMatch dom (ds!!n)
   where
     getDom V_PRA      = msPRA ms
     getDom V_MAILFROM = msMailFrom ms
@@ -50,7 +50,6 @@ include ms _ ds (DT_Dom, vid) (_, CV_Index n) =
     getDom V_DKIMFROM = msDKIMFrom ms
     getDom V_DKFROM   = msDKFrom ms
     getDom _          = error "getDom"
-    domMatch = elem
 include ms _ _ (DT_Res, vid) (_, CV_Result rs) = getRes vid `elem` rs
   where
     getRes V_SPF  = msSPFResult ms
@@ -68,5 +67,5 @@ include _ _ _ _ _ = error "include"
 
 ----------------------------------------------------------------
 
-exclude :: MailSpec -> [IPTable] -> [[Domain]] -> Variable -> Constant -> Bool
+exclude :: MailSpec -> [IPTable] -> [DomainTable] -> Variable -> Constant -> Bool
 exclude a b c d e = not (include a b c d e)
