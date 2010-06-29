@@ -20,7 +20,23 @@ data MailSpec = MailSpec {
   , msADSPResult     :: DAResult     -- #adsp
   , msSigDKIM        :: Bool         -- #sig_dkim
   , msSigDK          :: Bool         -- #sig_domainkeys
-  } deriving Show
+  }
+
+instance Show MailSpec where
+    show ms = "{#ip=" ++ show (msPeerIP ms)
+           ++ ",#mail_from=" ++ show (msMailFrom ms)
+           ++ ",#from=" ++ show (msFrom ms)
+           ++ ",#pra=" ++ show (msPRA ms)
+           ++ ",#dkim_from=" ++ show (msDKIMFrom ms)
+           ++ ",#domainkeys_from=" ++ show (msDKFrom ms)
+           ++ ",#spf=" ++ show (msSPFResult ms)
+           ++ ",#sender_id=" ++ show (msSenderIDResult ms)
+           ++ ",#dkim=" ++ show (msDKIMResult ms)
+           ++ ",#domainkeys=" ++ show (msDKResult ms)
+--           ++ ",#adsp=" ++ show (msADSPResult ms)
+           ++ ",#sig_dkim=" ++ show (msSigDKIM ms)
+           ++ ",#sig_domainkyes=" ++ show (msSigDK ms)
+           ++ "}"
 
 initialMailSpec :: MailSpec
 initialMailSpec = MailSpec {
