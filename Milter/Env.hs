@@ -11,6 +11,7 @@ data Env = Env {
   , debug    :: Bool
   , spf      :: Domain -> IP -> IO DAResult
   , dk       :: Mail -> DK -> IO DAResult
+  , dkim     :: Mail -> DKIM -> IO DAResult
   , errorHook   :: String -> IO ()
   , resultHook  :: String -> IO ()
   , monitorHook :: String -> IO ()
@@ -24,6 +25,7 @@ defaultEnv = Env {
   , debug   = undefined
   , spf     = undefined
   , dk      = undefined
+  , dkim    = undefined
   , errorHook   = undefined
   , resultHook  = undefined
   , monitorHook = undefined

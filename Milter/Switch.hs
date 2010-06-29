@@ -135,7 +135,11 @@ hedr env hdl ref bs = do
           x@(Just pdk) -> (pv { mpdk = x},
                            ms { msSigDK = True
                               , msDKFrom = Just (dkDomain pdk) })
---    | ckey == dkimFieldKey = xxx
+      | ckey == dkimFieldKey = case parseDKIM val of
+          Nothing -> (pv, ms)
+          x@(Just pdkim) -> (pv { mpdkim = x},
+                             ms { msSigDKIM = True
+                                , msDKIMFrom = Just (dkimDomain pdkim) })
       | otherwise = (pv, ms)
 
 ----------------------------------------------------------------
@@ -181,6 +185,8 @@ eoms env hdl ref _ = do
   st <- readIORef ref
   let mail = finalizeMail (xmail st)
       mdk = mpdk (parsedv st)
+      mdkim = mpdkim (parsedv st)
   xdk <- maybe (return DANone) (dk env mail) mdk
-  let ms = (mailspec st) { msDKResult = xdk }
+  xdkim <- maybe (return DANone) (dkim env mail) mdkim
+  let ms = (mailspec st) { msDKResult = xdk, msDKIMResult = xdkim }
   mfilter env hdl ref ms B_Body

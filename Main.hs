@@ -50,8 +50,9 @@ milterWapper rs lim env hdl _ = do
     st <- newIORef initialState
     withResolver rs $ \resolver -> do
         let env' = env {
-                spf = runSPF lim resolver
-              , dk  = runDK' resolver
+                spf  = runSPF lim resolver
+              , dk   = runDK' resolver
+              , dkim = runDKIM' resolver
               }
         milter env' hdl st
 

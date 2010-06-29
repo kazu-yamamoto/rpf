@@ -14,7 +14,7 @@ data State = State {
 
 initialState :: State
 initialState = State {
-    xmail    = initialMail
+    xmail    = initialXMail
   , mailspec = initialMailSpec
   , prdspec  = initialPRD
   , parsedv  = initialParsedValue
@@ -24,10 +24,11 @@ initialState = State {
 
 data ParsedValue = ParsedValue {
     mpdk   :: Maybe DK
---  , mpdkim :: Maybe DKIM
+  , mpdkim :: Maybe DKIM
   } deriving Show
 
 initialParsedValue :: ParsedValue
 initialParsedValue = ParsedValue {
-    mpdk = Nothing
+    mpdk   = Nothing
+  , mpdkim = Nothing
   }
