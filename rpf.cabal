@@ -3,6 +3,7 @@ Version:                0.2.0
 Author:                 Kazu Yamamoto <kazu@iij.ad.jp>
 Maintainer:             Kazu Yamamoto <kazu@iij.ad.jp>
 License:                BSD3
+License-File:           LICENSE
 Homepage:               http://www.mew.org/~kazu/proj/rpf/
 Synopsis:               Receiver Policy Framework
 Description:            Receiver Policy Framework (RPF) is a Milter
