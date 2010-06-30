@@ -3,6 +3,7 @@
 module Test where
 
 import Control.Applicative
+import Data.Map
 import Network.DomainAuth
 import RPF.Parser
 import RPF.Types
@@ -43,7 +44,7 @@ test_policy1 = do
            , ActionCond 18 (Just ((DT_Res,V_DK) :== (DT_Res,CV_Result [DAPass]))) A_Accept
            , ActionCond 19 Nothing A_Continue]
       ]
-          [] [["yahoo.com"]]
+          [] [fromList [("yahoo.com",True)]]
 
 ----------------------------------------------------------------
 
