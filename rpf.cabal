@@ -14,7 +14,7 @@ Cabal-Version:          >= 1.6
 Build-Type:             Simple
 Data-Files:             rpf.conf, rpf.policy
 Data-Dir:               config
-Extra-Source-Files:     README
+Extra-Source-Files:     README Test.hs
 Executable rpf
   Main-Is:              Main.hs
   if impl(ghc >= 6.12)

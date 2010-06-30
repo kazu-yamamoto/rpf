@@ -19,5 +19,7 @@ header {
 
 // #dkim, #domainkeys
 body {
+	accept: #dkim == 'pass';
+	accept: #domainkeys == 'pass';
 	continue;
 }
