@@ -14,19 +14,20 @@ Cabal-Version:          >= 1.6
 Build-Type:             Simple
 Data-Files:             rpf.conf, rpf.policy
 Data-Dir:               config
+Extra-Source-Files:     Test.hs
 Executable rpf
   Main-Is:              Main.hs
   if impl(ghc >= 6.12)
-    GHC-Options:        -Wall -O2 -fno-warn-unused-do-bind
+    GHC-Options:        -Wall -fno-warn-unused-do-bind
   else
-    GHC-Options:        -Wall -O2
-  Build-Depends:        base >= 4.0 && < 5, parsec, appar,
-                        haskell98, base, network, unix, hdaemonize,
-                        containers, hslogger, bytestring,
-                        c10k, iproute, dns, domain-auth
+    GHC-Options:        -Wall
+  Build-Depends:        base >= 4.0 && < 5, containers, bytestring,
+                        hdaemonize, hslogger, parsec,
+                        appar, c10k, iproute, dns, domain-auth
   Other-Modules:        Config
                         LogMsg
                         Milter
+                        Milter.Base
                         Milter.Env
                         Milter.Log
                         Milter.Switch
