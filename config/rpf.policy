@@ -17,7 +17,7 @@ header {
 	continue;
 }
 
-// #dkim, #domainkeys, #adsp
+// #dkim, #domainkeys
 body {
 	continue;
 }
