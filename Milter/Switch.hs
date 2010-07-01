@@ -73,14 +73,14 @@ type Filter = Env -> Handle -> IORef State -> ByteString -> IO ()
 
 open :: Filter
 open env hdl ref _ = do
-    logResult env ref "Connection is opened"
+    logResult env ref "Milter connection is opened"
     negoticate hdl
 
 ----------------------------------------------------------------
 
 conn :: Filter
 conn env hdl ref bs = do
-    logMonitor env ref "SMTP Connected"
+    logResult env ref "SMTP connected"
     st <- readIORef ref
     let ip = getIP bs
         ms = (mailspec st) { msPeerIP = ip }
