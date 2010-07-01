@@ -18,7 +18,7 @@ import System.IO
 import System.Posix.Daemonize (daemonize)
 
 progName :: String
-progName = "rpf 0.2.0"
+progName = "rpf 0.2.1"
 
 ----------------------------------------------------------------
 
