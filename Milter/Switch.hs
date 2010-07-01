@@ -55,7 +55,9 @@ mfilter env hdl ref ms bn =
          (l,A_Discard)  -> doit discard "Discarded" l
          (l,A_Hold)     -> doit hold    "Held"      l
          (l,A_Reject)   -> doit reject  "Rejected"  l
-         (_,A_Continue) -> logMonitor env ref "continue" >> continue hdl
+         (_,A_Continue) -> if bn == B_Body
+                           then logResult env ref "Accepted by default" >> continue hdl
+                           else logMonitor env ref "continue" >> continue hdl
   where
     doit act m l = do
         logResult env ref $ m ++ " in line " ++ show l
@@ -71,14 +73,14 @@ type Filter = Env -> Handle -> IORef State -> ByteString -> IO ()
 
 open :: Filter
 open env hdl ref _ = do
-    logMonitor env ref "Milter opened:"
+    logResult env ref "Connection is opened"
     negoticate hdl
 
 ----------------------------------------------------------------
 
 conn :: Filter
 conn env hdl ref bs = do
-    logMonitor env ref "SMTP Connected:"
+    logMonitor env ref "SMTP Connected"
     st <- readIORef ref
     let ip = getIP bs
         ms = (mailspec st) { msPeerIP = ip }
@@ -91,14 +93,14 @@ conn env hdl ref bs = do
 
 helo :: Filter
 helo env hdl ref _ = do
-  logMonitor env ref "HELO:"
+  logMonitor env ref "HELO"
   continue hdl
 
 ----------------------------------------------------------------
 
 mfro :: Filter
 mfro env hdl ref bs = do
-    logMonitor env ref "MAIL FROM:"
+    logMonitor env ref "MAIL FROM"
     let jmailfrom = extractDomain bs
     case jmailfrom of
       Nothing -> continue hdl -- xxx
@@ -118,7 +120,7 @@ mfro env hdl ref bs = do
 
 hedr :: Filter
 hedr env hdl ref bs = do
-    logMonitor env ref "DATA HEADER FIELD:"
+    logMonitor env ref "DATA HEADER FIELD"
     st <- readIORef ref
     let (key,val) = getKeyVal bs
         ckey = canonicalizeKey key
@@ -146,7 +148,7 @@ hedr env hdl ref bs = do
 
 eohd :: Filter
 eohd env hdl ref _ = do
-    logMonitor env ref "DATA HEADER END:"
+    logMonitor env ref "DATA HEADER END"
     st <- readIORef ref
     let jfrom = getFrom st
         jprd  = decidePRD (prdspec st)
@@ -170,7 +172,7 @@ eohd env hdl ref _ = do
 
 body :: Filter
 body env hdl ref bs = do
-    logMonitor env ref "DATA BODY:"
+    logMonitor env ref "DATA BODY"
     st <- readIORef ref
     let bc = getBody bs
         xm = pushBody bc (xmail st)
@@ -181,7 +183,7 @@ body env hdl ref bs = do
 
 eoms :: Filter
 eoms env hdl ref _ = do
-  logMonitor env ref "DATA BODY END:"
+  logMonitor env ref "DATA BODY END"
   st <- readIORef ref
   let mail = finalizeMail (xmail st)
       mdk = mpdk (parsedv st)
