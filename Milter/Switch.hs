@@ -72,9 +72,7 @@ type Filter = Env -> Handle -> IORef State -> ByteString -> IO ()
 ----------------------------------------------------------------
 
 open :: Filter
-open env hdl ref _ = do
-    logResult env ref "Milter connection is opened"
-    negoticate hdl
+open _ hdl _ _ = negoticate hdl
 
 ----------------------------------------------------------------
 
