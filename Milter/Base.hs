@@ -6,7 +6,7 @@ module Milter.Base (
   , getIP
   , getKeyVal
   , getBody
-  , negoticate
+  , negotiate
   , accept, discard, hold, reject, continue
   ) where
 
@@ -86,8 +86,8 @@ getIP bs
 
 ----------------------------------------------------------------
 
-negoticate :: Handle -> IO ()
-negoticate hdl =  putPacket hdl negoPkt -- do NOT use safePutPacket
+negotiate :: Handle -> IO ()
+negotiate hdl =  putPacket hdl negoPkt -- do NOT use safePutPacket
 
 negoPkt :: Packet
 negoPkt = Packet 'O' $ ver +++ act +++ pro
