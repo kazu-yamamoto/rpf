@@ -228,7 +228,8 @@ domainList = do
 ----------------------------------------------------------------
 
 result :: Parser DAResult
-result = (char '\'' >> authResult) <* char '\''
+result = (char '\'' >> authResult) <* char '\'' -- backward compatibility
+     <|> authResult
   where
     authResult :: Parser DAResult
     authResult = sym2enum resultWords [minBound..maxBound]

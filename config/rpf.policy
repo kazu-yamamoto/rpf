@@ -6,20 +6,20 @@ connect {
 
 // #spf, #mail_from
 mail_from {
-	accept: #spf == 'pass';
+	accept: #spf == pass;
 	continue;
 }
 
 // #from, #pra, #sender_id, #dkim_from, #domainkeys_from, #sig_dkim, #sig_domainkeys
 header {
-	accept: #sender_id == 'pass';
+	accept: #sender_id == pass;
 	reject: #mail_from == "yahoo.com" && #sig_domainkeys == No;
 	continue;
 }
 
 // #dkim, #domainkeys
 body {
-	accept: #dkim == 'pass';
-	accept: #domainkeys == 'pass';
+	accept: #dkim == pass;
+	accept: #domainkeys == pass;
 	continue;
 }
