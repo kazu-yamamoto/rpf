@@ -17,8 +17,11 @@ import System.Exit
 import System.IO
 import System.Posix.Daemonize (daemonize)
 
+version :: String
+version = "0.2.2"
+
 progName :: String
-progName = "rpf 0.2.1"
+progName = "rpf " ++ version
 
 ----------------------------------------------------------------
 
