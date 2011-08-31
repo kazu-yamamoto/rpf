@@ -1,9 +1,10 @@
 module RPF.Lexer where
 
-import Parsec
+import RPF.Types
+import Text.Parsec
+import Text.Parsec.String
 import Text.ParserCombinators.Parsec.Language
 import Text.ParserCombinators.Parsec.Token as P
-import RPF.Types
 
 ----------------------------------------------------------------
 

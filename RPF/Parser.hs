@@ -1,5 +1,6 @@
 module RPF.Parser where
 
+import Control.Applicative hiding (many,optional,(<|>))
 import Control.Monad
 import qualified Data.ByteString.Char8 as BS
 import Data.IP
@@ -7,20 +8,13 @@ import Data.List
 import Data.Maybe
 import Network.DNS.Types (Domain)
 import Network.DomainAuth
-import Parsec hiding (Parser)
 import RPF.Domain
 import RPF.IP
 import RPF.Lexer
 import RPF.State
 import RPF.Types
+import Text.Parsec
 import Text.ParserCombinators.Parsec.Expr
-
-{-
-import Debug.Trace
-infixr 0 .$.
-(.$.) :: Show a => (a -> b) -> a -> b
-f .$. x = trace (show x) f x
--}
 
 ----------------------------------------------------------------
 

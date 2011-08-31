@@ -1,5 +1,5 @@
 Name:                   rpf
-Version:                0.2.3
+Version:                0.2.4
 Author:                 Kazu Yamamoto <kazu@iij.ad.jp>
 Maintainer:             Kazu Yamamoto <kazu@iij.ad.jp>
 License:                BSD3
@@ -18,13 +18,7 @@ Data-Dir:               config
 Extra-Source-Files:     README Test.hs
 Executable rpf
   Main-Is:              Main.hs
-  if impl(ghc >= 7)
-    GHC-Options:        -Wall -O2 -fno-warn-unused-do-bind -threaded
-  else
-    if impl(ghc >= 6.12)
-      GHC-Options:        -Wall -O2 -fno-warn-unused-do-bind
-    else
-      GHC-Options:        -Wall -O2
+  GHC-Options:          -Wall -fno-warn-unused-do-bind -threaded
   Build-Depends:        base >= 4.0 && < 5, containers, bytestring,
                         hdaemonize, hslogger, parsec,
                         appar, c10k, iproute, dns, domain-auth
@@ -37,7 +31,6 @@ Executable rpf
                         Milter.Switch
                         Milter.Types
                         MailSpec
-                        Parsec
                         RPF
                         RPF.Domain
                         RPF.Eval
