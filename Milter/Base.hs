@@ -10,13 +10,16 @@ module Milter.Base (
   , accept, discard, hold, reject, continue
   ) where
 
+import Blaze.ByteString.Builder
+import Blaze.ByteString.Builder.Char8
 import Control.Applicative
 import Control.Monad
+import qualified Data.ByteString as X (unpack)
 import Data.ByteString.Char8 (ByteString)
 import qualified Data.ByteString.Char8 as BS
-import Data.Char
 import Data.IP
 import Data.List (foldl')
+import Data.Monoid
 import System.IO
 
 ----------------------------------------------------------------
@@ -47,9 +50,9 @@ getPacket hdl = do
 
 putPacket :: Handle -> Packet -> IO ()
 putPacket hdl (Packet c bs) = do
-    let len = fromIntegral (BS.length bs) + 1
-    BS.hPut hdl $ intToFourBytes len
-    BS.hPut hdl $ c `BS.cons` bs
+    let len = BS.length bs + 1
+        pkt = intToFourBytes len +++ fromChar c +++ fromByteString bs
+    BS.hPut hdl $ toByteString pkt
 
 safePutPacket :: Handle -> Packet -> IO ()
 safePutPacket hdl pkt = withOpenedHandleDo hdl $ putPacket hdl pkt
@@ -90,7 +93,7 @@ negotiate :: Handle -> IO ()
 negotiate hdl =  putPacket hdl negoPkt -- do NOT use safePutPacket
 
 negoPkt :: Packet
-negoPkt = Packet 'O' $ ver +++ act +++ pro
+negoPkt = Packet 'O' $ toByteString $ ver +++ act +++ pro
   where
     ver = intToFourBytes 2 -- Sendmail 8.13.8, sigh
     act = intToFourBytes 0
@@ -112,16 +115,20 @@ getCmd :: Handle -> IO Char
 getCmd hdl = BS.head <$> BS.hGet hdl 1
 
 fourBytesToInt :: ByteString -> Int
-fourBytesToInt = foldl' (\a b -> a * 256 + b) 0 . map ord . BS.unpack
+fourBytesToInt = foldl' (\a b -> a * 256 + b) 0 . map fromIntegral . X.unpack
 
-intToFourBytes :: Int -> ByteString
-intToFourBytes = BS.pack. reverse . map chr . moddiv 4
+intToFourBytes :: Int -> Builder
+intToFourBytes = fromInt32be . fromIntegral
 
-moddiv :: Int -> Int -> [Int]
-moddiv 0 _ = []
-moddiv i m = (m `mod` 256) : moddiv (i - 1) (m `div` 256)
+{-
+moddiv :: Int -> [Int]
+moddiv q0 = [r4,r3,r2,r1]
+  where
+    (q1,r1) = q0 `divMod` 256
+    (q2,r2) = q1 `divMod` 256
+    (q3,r3) = q2 `divMod` 256
+    r4 = q3 `mod` 256
+-}
 
-----------------------------------------------------------------
-
-(+++) :: ByteString -> ByteString -> ByteString
-(+++) = BS.append
+(+++) :: Builder -> Builder -> Builder
+(+++) = mappend
