@@ -12,8 +12,8 @@ module Milter.Base (
 
 import Control.Applicative
 import Control.Monad
-import Data.ByteString.Lazy.Char8 (ByteString)
-import qualified Data.ByteString.Lazy.Char8 as L hiding (ByteString)
+import Data.ByteString.Char8 (ByteString)
+import qualified Data.ByteString.Char8 as BS
 import Data.Char
 import Data.IP
 import Data.List (foldl')
@@ -47,9 +47,9 @@ getPacket hdl = do
 
 putPacket :: Handle -> Packet -> IO ()
 putPacket hdl (Packet c bs) = do
-    let len = fromIntegral (L.length bs) + 1
-    L.hPut hdl $ intToFourBytes len
-    L.hPut hdl $ c `L.cons` bs
+    let len = fromIntegral (BS.length bs) + 1
+    BS.hPut hdl $ intToFourBytes len
+    BS.hPut hdl $ c `BS.cons` bs
 
 safePutPacket :: Handle -> Packet -> IO ()
 safePutPacket hdl pkt = withOpenedHandleDo hdl $ putPacket hdl pkt
@@ -64,14 +64,14 @@ withOpenedHandleDo hdl block = do
 getKeyVal :: ByteString -> (ByteString, ByteString)
 getKeyVal bs = (key,val)
   where
-    kv = L.split '\0' bs
+    kv = BS.split '\0' bs
     key = kv !! 0
     val = kv !! 1
 
 ----------------------------------------------------------------
 
 getBody :: ByteString -> ByteString
-getBody = L.init -- removing the last '\0'
+getBody = BS.init -- removing the last '\0'
 
 ----------------------------------------------------------------
 
@@ -80,9 +80,9 @@ getIP bs
   | fam == '4' = IPv4 . read $ adr
   | otherwise  = IPv6 . read $ adr
   where
-    ip  = L.split '\0' bs !! 1
-    fam = L.head ip
-    adr = L.unpack $ L.drop 3 ip
+    ip  = BS.split '\0' bs !! 1
+    fam = BS.head ip
+    adr = BS.unpack $ BS.drop 3 ip
 
 ----------------------------------------------------------------
 
@@ -106,16 +106,16 @@ noData    = 0x200
 ----------------------------------------------------------------
 
 getNByte :: Handle -> Int -> IO ByteString
-getNByte = L.hGet
+getNByte = BS.hGet
 
 getCmd :: Handle -> IO Char
-getCmd hdl = L.head <$> L.hGet hdl 1
+getCmd hdl = BS.head <$> BS.hGet hdl 1
 
 fourBytesToInt :: ByteString -> Int
-fourBytesToInt = foldl' (\a b -> a * 256 + b) 0 . map ord . L.unpack
+fourBytesToInt = foldl' (\a b -> a * 256 + b) 0 . map ord . BS.unpack
 
 intToFourBytes :: Int -> ByteString
-intToFourBytes = L.pack. reverse . map chr . moddiv 4
+intToFourBytes = BS.pack. reverse . map chr . moddiv 4
 
 moddiv :: Int -> Int -> [Int]
 moddiv 0 _ = []
@@ -124,4 +124,4 @@ moddiv i m = (m `mod` 256) : moddiv (i - 1) (m `div` 256)
 ----------------------------------------------------------------
 
 (+++) :: ByteString -> ByteString -> ByteString
-(+++) = L.append
+(+++) = BS.append

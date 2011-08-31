@@ -1,6 +1,7 @@
 module RPF.Parser where
 
 import Control.Monad
+import qualified Data.ByteString.Char8 as BS
 import Data.IP
 import Data.List
 import Data.Maybe
@@ -208,7 +209,7 @@ ipList = do
 ----------------------------------------------------------------
 
 domain :: Parser Domain
-domain = (char '"' >> many1 (noneOf "\"")) <* symbol "\""
+domain = BS.pack <$> (char '"' >> many1 (noneOf "\"")) <* symbol "\""
 
 domainList :: Parser Constant
 domainList = do

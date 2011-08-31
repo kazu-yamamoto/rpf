@@ -4,7 +4,7 @@ module Milter.Switch (milter) where
 
 import Control.Applicative
 import Control.Monad (unless)
-import Data.ByteString.Lazy.Char8 (ByteString)
+import Data.ByteString.Char8 (ByteString)
 import Data.IORef
 import MailSpec
 import Milter.Base
