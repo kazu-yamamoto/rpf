@@ -20,7 +20,7 @@ Executable rpf
   Main-Is:              Main.hs
   GHC-Options:          -Wall -fno-warn-unused-do-bind -threaded
   Build-Depends:        base >= 4.0 && < 5, containers, bytestring,
-                        hdaemonize, hslogger, parsec,
+                        hslogger, parsec, unix,
                         appar, c10k, iproute, dns, domain-auth
   Other-Modules:        Config
                         LogMsg

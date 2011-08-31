@@ -15,7 +15,7 @@ import RPF
 import System.Environment
 import System.Exit
 import System.IO
-import System.Posix.Daemonize (daemonize)
+import System.Posix hiding (version, Limit)
 
 version :: String
 version = "0.2.4"
@@ -115,3 +115,22 @@ toEnv opt plcy = defaultEnv {
   , monitorHook = infoMsg
   , debugHook   = debugMsg
   }
+
+----------------------------------------------------------------
+
+daemonize :: IO () -> IO ()
+daemonize program = ensureDetachTerminalCanWork $ do
+    detachTerminal
+    ensureNeverAttachTerminal $ do
+        changeWorkingDirectory "/"
+        setFileCreationMask 0
+        mapM_ closeFd [stdInput, stdOutput, stdError]
+        program
+  where
+    ensureDetachTerminalCanWork p = do
+        forkProcess p
+        exitImmediately ExitSuccess
+    ensureNeverAttachTerminal p = do
+        forkProcess p
+        exitImmediately ExitSuccess
+    detachTerminal = createSession
