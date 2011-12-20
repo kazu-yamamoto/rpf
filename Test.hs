@@ -1,31 +1,28 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, TemplateHaskell #-}
 
 module Test where
 
 import Control.Applicative
-import Data.Map as M
 import Data.IP
 import Data.IP.RouteTable as T
+import Data.Map as M
 import Network.DomainAuth
+import RPF.IP
 import RPF.Parser
 import RPF.Types
-import RPF.IP
-import Test.Framework (defaultMain, testGroup, Test)
 import Test.Framework.Providers.HUnit
-import Test.HUnit hiding (Test)
-
-tests :: [Test]
-tests = [
-    testGroup "Policy" [
-         testCase "policy1" test_policy1
---       , testCase "policy2" test_policy2
-       ]
-  ]
+import Test.Framework.TH
+import Test.HUnit
 
 ----------------------------------------------------------------
 
-test_policy1 :: Assertion
-test_policy1 = do
+main :: IO ()
+main = $(defaultMainGenerator)
+
+----------------------------------------------------------------
+
+case_policy1 :: Assertion
+case_policy1 = do
     plcy <- parsePolicy <$> readFile "config/rpf.policy"
     plcy @?= res
   where
@@ -38,7 +35,3 @@ test_policy1 = do
           [IPTable (T.fromList [(makeAddrRange (toIPv4 [127,0,0,1]) 32,True)]) T.empty]
           [M.fromList [("yahoo.com",True)]]
 
-----------------------------------------------------------------
-
-main :: IO ()
-main = defaultMain tests
