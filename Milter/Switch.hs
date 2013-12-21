@@ -3,6 +3,7 @@
 module Milter.Switch (milter) where
 
 import Control.Applicative
+import Control.Exception
 import Control.Monad (unless)
 import Data.ByteString.Char8 (ByteString)
 import Data.IORef
@@ -19,16 +20,16 @@ import System.IO
 
 milter :: Env -> Handle -> IORef State -> IO ()
 milter env hdl ref = withValidHandleDo $
-    flip catch errorHandle $ do
+    handle errorHandle $ do
       rpkt <- getPacket hdl
       switch env hdl ref rpkt
       milter env hdl ref
   where
-    errorHandle e = logDebug env ref $ show e
-    withValidHandleDo block = do
+    errorHandle (SomeException e) = logDebug env ref $ show e
+    withValidHandleDo blk = do
         closed <- hIsClosed hdl
         eof <- hIsEOF hdl
-        unless (eof || closed) block
+        unless (eof || closed) blk
 
 switch :: Env -> Handle -> IORef State -> Packet -> IO ()
 switch env hdl ref (Packet 'O' bs) = open env hdl ref bs
