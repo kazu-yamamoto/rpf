@@ -53,7 +53,7 @@ definition = do
     cst <- identifier -- $foo
     reservedOp "="
     dat <- ipList <|> domainList <|> resultList
-    semi
+    void semi
     define cst dat
     return ()
   where
@@ -95,13 +95,13 @@ actionCond = do
     let l = sourceLine pos
     act <- action
     cnd <- option Nothing condition
-    semi
+    void semi
     return $ ActionCond l cnd act
   where
     action :: Parser Action
     action = sym2enum actionWords [minBound..maxBound]
     condition = do
-        colon
+        void colon
         cnd <- cond
         return $ Just cnd
 
@@ -114,7 +114,7 @@ cond = buildExpressionParser table term
 
 term :: Parser Cond
 term = do
-    char '#'
+    void $ char '#'
     var@(vtyp,vid) <- variable
     checkVar vid
     opr <- opMatch <|> opNotMatch

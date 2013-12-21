@@ -11,7 +11,7 @@ import RPF.IP
 import RPF.Parser
 import RPF.Types
 import Test.Framework.Providers.HUnit
-import Test.Framework.TH
+import Test.Framework.TH.Prime
 import Test.HUnit
 
 ----------------------------------------------------------------

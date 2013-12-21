@@ -120,17 +120,17 @@ toEnv opt plcy = defaultEnv {
 
 daemonize :: IO () -> IO ()
 daemonize program = ensureDetachTerminalCanWork $ do
-    detachTerminal
+    void detachTerminal
     ensureNeverAttachTerminal $ do
         changeWorkingDirectory "/"
-        setFileCreationMask 0
+        void $ setFileCreationMask 0
         mapM_ closeFd [stdInput, stdOutput, stdError]
         program
   where
     ensureDetachTerminalCanWork p = do
-        forkProcess p
+        void $ forkProcess p
         exitImmediately ExitSuccess
     ensureNeverAttachTerminal p = do
-        forkProcess p
+        void $ forkProcess p
         exitImmediately ExitSuccess
     detachTerminal = createSession
