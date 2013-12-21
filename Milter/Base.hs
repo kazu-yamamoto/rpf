@@ -93,7 +93,7 @@ negotiate :: Handle -> IO ()
 negotiate hdl =  putPacket hdl negoPkt -- do NOT use safePutPacket
 
 negoPkt :: Packet
-negoPkt = Packet 'O' $ toByteString $ ver +++ act +++ pro
+negoPkt = Packet 'O' $ toByteString $ ver <> act <> pro
   where
     ver = intToFourBytes 2 -- Sendmail 8.13.8, sigh
     act = intToFourBytes 0
