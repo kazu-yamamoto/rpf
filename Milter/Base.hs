@@ -51,7 +51,7 @@ getPacket hdl = do
 putPacket :: Handle -> Packet -> IO ()
 putPacket hdl (Packet c bs) = do
     let len = BS.length bs + 1
-        pkt = intToFourBytes len +++ fromChar c +++ fromByteString bs
+        pkt = intToFourBytes len <> fromChar c <> fromByteString bs
     BS.hPut hdl $ toByteString pkt
 
 safePutPacket :: Handle -> Packet -> IO ()
@@ -129,6 +129,3 @@ moddiv q0 = [r4,r3,r2,r1]
     (q3,r3) = q2 `divMod` 256
     r4 = q3 `mod` 256
 -}
-
-(+++) :: Builder -> Builder -> Builder
-(+++) = mappend
