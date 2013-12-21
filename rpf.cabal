@@ -16,12 +16,22 @@ Build-Type:             Simple
 Data-Files:             rpf.conf, rpf.policy
 Data-Dir:               config
 Extra-Source-Files:     README Test.hs
+
 Executable rpf
   Main-Is:              Main.hs
-  GHC-Options:          -Wall -fno-warn-unused-do-bind -threaded
-  Build-Depends:        base >= 4.0 && < 5, containers, bytestring,
-                        hslogger, parsec, unix, blaze-builder,
-                        appar, c10k, iproute, dns, domain-auth
+  GHC-Options:          -Wall -threaded
+  Build-Depends:        base >= 4.0 && < 5
+                      , appar
+                      , blaze-builder
+                      , bytestring
+                      , c10k
+                      , containers
+                      , dns
+                      , domain-auth
+                      , hslogger
+                      , iproute
+                      , parsec
+                      , unix
   Other-Modules:        Config
                         LogMsg
                         Milter
